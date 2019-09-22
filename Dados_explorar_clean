@@ -1,0 +1,32 @@
+#10 variaveis categoricas e 8 numericas
+
+#Administrative", "Administrative Duration", "Informational", "Informational Duration",
+#"Product Related" e "Product Related Duration sao o numero de paginas em tal categoria e 
+#o tempo que o individuo ficou na mesma categoria
+
+#Bounce rate a porcentagem de individuos que sai apenas ao olhar a primeira pagina
+#exit rate a porcentagem de individuos que sairam de uma pagina especifica
+#depois de ter visitado outra pagina no seu site
+
+#Page value e o valor medio para uma pagina que o usuario visitou antes de ir para sua
+#pagina de objetivo
+
+#special day o horário de visita do site a um dia especial
+#específico (por exemplo, dia das mães, dia dos namorados) no qual 
+#as sessões têm mais probabilidade de serem finalizadas com a transação.
+#O valor desse atributo é determinado considerando a dinâmica do 
+#comércio eletrônico, como a duração entre a data do pedido e a data de entrega. 
+
+#O conjunto de dados também inclui operating system, browser, region, traffic type,
+#visitor type ,tipo de visitante como visitante novo ou recorrente
+#, um valor booleano indicando se a data da visita é final de semana e mês do ano.
+
+#revenue e se gerou ou nao renda
+
+#abrindo banco
+
+
+
+
+
+
