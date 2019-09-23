@@ -83,7 +83,7 @@ cm
 # Ajuste do modelo Arvore de Decisao
 modelLookup(model = 'rpart')
 
-modelo <- train(factor(Revenue) ~., 
+modelo <- train(factor(dadov) ~Weekend, 
                 data = treino, method = 'rpart',
                 trControl = controle, tuneLength = 10 )
 modelo$finalModel
@@ -94,7 +94,7 @@ cm
 
 install.packages('rattle')
 library(rattle)
-fancyRpartPlot(modelo$finalModel, type = 4)
+fancyRpartPlot(modelo$finalModel)
 
 
 
