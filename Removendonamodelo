@@ -50,6 +50,52 @@ cm
 
 
 
+# KNN
+
+knn = train(factor(Revenue) ~ ., data = treino, method = 'knn',
+            trControl = controle, tuneLength = 10 )
+knn
+
+predicao = predict(knn, newdata = teste)
+cm = confusionMatrix(predicao, factor(teste[['Revenue']]) )
+cm
+
+# LDA
+
+lda = train(factor(Revenue) ~ ., data = treino, method = 'knn',
+            trControl = controle, tuneLength = 10 )
+lda
+
+predicao = predict(lda, newdata = teste)
+cm = confusionMatrix(predicao, factor(teste[['Revenue']]) )
+cm
+
+# QDA
+
+qda = train(factor(Revenue) ~., data = treino, method = 'knn',
+            trControl = controle, tuneLength = 10 )
+qda
+
+predicao = predict(qda, newdata = teste)
+cm = confusionMatrix(predicao, factor(teste[['Revenue']]) )
+cm
+
+# Ajuste do modelo Arvore de Decisao
+modelLookup(model = 'rpart')
+
+modelo <- train(factor(Revenue) ~., 
+                data = treino, method = 'rpart',
+                trControl = controle, tuneLength = 10 )
+modelo$finalModel
+
+predicao = predict(modelo, newdata = teste)
+cm = confusionMatrix(predicao, factor(teste[['Revenue']]) )
+cm
+
+install.packages('rattle')
+library(rattle)
+fancyRpartPlot(modelo$finalModel, type = 4)
+
 
 
 
