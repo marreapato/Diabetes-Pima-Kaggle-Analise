@@ -3,37 +3,32 @@ install.packages("naniar")
 library(naniar)
 library(tidyverse)
 dado<-intencaocompra
-
 dadov<-as.vector(dado$VisitorType)
 dadov<-str_replace_all(dadov,"Other","NA")
-
 dadov
-
-dado<-cbind(dado,dadov)
-
-dado<-dado[,-7]
-
-dado<-as.tibble(dado)
-
 dadov<-dadov %>% na_if("NA")
+dado<-cbind(dado,dadov)
+dado<-as.tibble(dado)
+dado<-dado[,-7]
 
 table(is.na(dado$dadov))
 
 table(dado$dadov)
 #transformado em NA
 #fatores
-dado$VisitorType<-as.factor(dado$VisitorType)
+dado$dadov<-as.factor(dado$dadov)
 dado$Revenue<-as.factor(dado$Revenue)
 dado$Weekend<-as.factor(dado$Weekend)
 
 str(dado)
-dados<-na.exclude(dados)
+
 
 # Pacote 'caret'
 #install.packages("caret")
 library(caret)
 
 dados<-dado
+dados<-na.exclude(dados)
 #problema dos NA
 
 # Dividindo em teste e treinamento
