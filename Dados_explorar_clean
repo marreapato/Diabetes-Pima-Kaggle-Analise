@@ -25,8 +25,17 @@
 
 #abrindo banco
 
-
+#limpando
 dado<-online_shoppers_intention
 dado<-dado[,-c(2,4,6,12:15)]
 dado<-dado[,-c(7)]
+dado<-dado[,-6]
+
+#salvando
+library(tidyverse)
+library(readxl)
+library(xlsx)
+
+
+write.csv(x = dado,file = "intencaocompra.csv",row.names = F )
 
