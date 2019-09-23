@@ -1,0 +1,68 @@
+# modelo ml
+install.packages("naniar")
+library(naniar)
+library(tidyverse)
+dado<-intencaocompra
+
+dadov<-as.vector(dado$VisitorType)
+dadov<-str_replace_all(dadov,"Other","NA")
+
+dadov
+
+dado<-cbind(dado,dadov)
+
+dado<-dado[,-7]
+
+dado<-as.tibble(dado)
+
+dadov<-dadov %>% na_if("NA")
+
+table(is.na(dado$dadov))
+
+table(dado$dadov)
+#transformado em NA
+#fatores
+dado$VisitorType<-as.factor(dado$VisitorType)
+dado$Revenue<-as.factor(dado$Revenue)
+dado$Weekend<-as.factor(dado$Weekend)
+
+str(dado)
+dados<-na.exclude(dados)
+
+# Pacote 'caret'
+#install.packages("caret")
+library(caret)
+
+dados<-dado
+#problema dos NA
+
+# Dividindo em teste e treinamento
+indice = createDataPartition(y = dados[['Revenue']], p = 0.75, list = FALSE)
+treino = dados[ indice, ]
+teste  = dados[-indice, ] 
+
+# Controle do Treinamento
+controle <- trainControl(method = "repeatedcv", number = 10, repeats = 3) 
+
+# Ajuste do modelo REG LOG
+modelLookup(model = 'glm')
+rl = train(factor(Revenue) ~., data = treino, method = 'glm',
+           trControl = controle, tuneLength = 10 )
+predicao = predict(rl, newdata = teste)
+cm = confusionMatrix(predicao, factor(teste[['Revenue']]) )
+cm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
