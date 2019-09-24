@@ -1,70 +1,147 @@
-# modelo ml
-install.packages("naniar")
-library(naniar)
-library(tidyverse)
-str(dados)
-# Pacote 'caret'
-#install.packages("caret")
-#library(caret)
+#chamando banco
+diabetes<-read.csv("diabetes.csv")
+diabetes<-as.data.frame(diabetes)
 
-dados<-na.exclude(dados)
-table(is.na(dados))
-#problema dos NA
-
-# Dividindo em teste e treinamento
-indice = createDataPartition(y = dados[['Outcome']], p = 0.75, list = FALSE)
-treino = dados[ indice, ]
-teste  = dados[-indice, ]
-# Controle do Treinament
-controle <- trainControl(method = "repeatedcv", number = 10, repeats = 3) 
-
-install.packages("e1071")
+#pacotes importantes
+library(caret)
 library(e1071)
-table(is.na.data.frame(dados))#n tem na
+library(corrplot)
+#grafico de corr
 
+corrplot(cor(diabetes),method="number")#caso deseje ver a correlacao com a pedigree
+diabetes <- diabetes[,-7]#tirando a pedigree function(nao achei interpretacao)
 
+corrplot(cor(diabetes),method="number")
+#separando os dados entre treinamento e teste
 
+indice<-createDataPartition(diabetes[["Outcome"]],list=FALSE,p=0.70)
+treino<-diabetes[indice,]
+teste <-diabetes[-indice,]
 
-# KNN
+#treinando modelo
 
-knn = train(factor(Outcome) ~BloodPressure, data = treino, method = 'knn',
-            trControl = controle, tuneLength = 10 )
-knn
+controle<-trainControl(method="repeatedcv",number=10,repeats = 5)
 
-predicao = predict(knn, newdata = teste)
-cm = confusionMatrix(predicao, factor(teste[['Outcome']]) )
+#treinando modelo knn
+
+modeloknn <- train(factor(Outcome)~BMI+Age,#na.action = Caso tenha na
+               data = treino,method="knn",tuneLength=10)
+modeloknn
+pred <- predict(modeloknn,newdata = teste)
+#ver<-cbind(teste,pred)
+#ver
+#testando observacao
+#novaob <- data.frame(BMI=34.5,Age=40)
+#novaob
+#pred <- predict(modeloknn,newdata = novaob)
+pred
+cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
 cm
 
-# LDA
-
-lda = train(factor(vencedor) ~  blue_vitoria_ko+red_vitoria_ko, data = treino, method = 'lda',
-            trControl = controle, tuneLength = 10 )
-lda
-
-predicao = predict(lda, newdata = teste)
-cm = confusionMatrix(predicao, factor(teste[['vencedor']]) )
+#testando outros modelos ainda com o knn
+#treinando modelo
+attach(diabetes)
+#com as variaveis mais de maior correlacao
+modeloknn <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
+                   data = treino,method="knn",tuneLength=10)
+modeloknn
+pred <- predict(modeloknn,newdata = teste)
+#ver<-cbind(teste,pred)
+#ver
+#testando observacao
+#novaob <- data.frame(BMI=34.5,Age=40)
+#novaob
+#pred <- predict(modeloknn,newdata = novaob)
+pred
+cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
 cm
 
-
-
-# Ajuste do modelo Arvore de Decisao
-modelLookup(model = 'rpart')
-
-modelo <- train(factor(Outcome) ~., 
-                data = treino, method = 'rpart',
-                trControl = controle, tuneLength = 10 )
-modelo$finalModel
-
-predicao = predict(modelo, newdata = teste)
-cm = confusionMatrix(predicao, factor(teste[['Outcome']]) )
+#testando outros modelos regressao logistica//maior acuracia do mod foi com essas
+modeloglm <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
+                   data = treino,method="glm",tuneLength=10)
+modeloglm
+pred <- predict(modeloglm,newdata = teste)
+ver<-cbind(teste,pred)
+ver
+#testando observacao
+#novaob <- data.frame(BMI=43.5,Age=25)
+#novaob
+#pred <- predict(modeloglm,newdata = novaob)
+#pred
+cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
 cm
 
-install.packages('rattle')
-library(rattle)
-fancyRpartPlot(modelo$finalModel)
+#testando outros modelos lda/na questao do p valor esse foi melhor
+modelolda <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
+                   data = treino,method="lda",tuneLength=10)
+modelolda
+pred <- predict(modelolda,newdata = teste)
+#ver<-cbind(teste,pred)
+#ver
+#testando observacao
+#novaob <- data.frame(BMI=34.5,Age=40)
+#novaob
+#pred <- predict(modeloknn,newdata = novaob)
+pred
+cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
+cm# o lda foi melhor que o glm
+
+#qda modelo//nao foi mto bom
+modeloqda <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
+                   data = treino,method="qda",tuneLength=10)
+modeloqda
+pred <- predict(modeloqda,newdata = teste)
+#ver<-cbind(teste,pred)
+#ver
+#testando observacao
+#novaob <- data.frame(BMI=34.5,Age=40)
+#novaob
+#pred <- predict(modeloknn,newdata = novaob)
+pred
+cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
+cm
+
+#testando a arvore de decisao que n foi mto boa tbm
+
+modelotree <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
+                   data = treino,method="rpart",tuneLength=10)
+modelotree
+pred <- predict(modelotree,newdata = teste)
+#ver<-cbind(teste,pred)
+#ver
+#testando observacao
+#novaob <- data.frame(BMI=34.5,Age=40)
+#novaob
+#pred <- predict(modeloknn,newdata = novaob)
+pred
+cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
+cm# o lda foi melhor que o glm
+#a arvore n foi mto boa
+
+#####################################################################################
+
+#modelos bonus
+
+#randomforest
+
+modeloforest <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
+                    data = treino,method="rf",tuneLength=10)
+modelotree
+pred <- predict(modelotree,newdata = teste)
+#ver<-cbind(teste,pred)
+#ver
+#testando observacao
+#novaob <- data.frame(BMI=34.5,Age=40)
+#novaob
+#pred <- predict(modeloknn,newdata = novaob)
+pred
+cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
+cm# o lda foi melhor que o glm
+#a arvore n foi mto boa
 
 
-dados<-read.csv("diabetes.csv")
+
+
 
 
 
