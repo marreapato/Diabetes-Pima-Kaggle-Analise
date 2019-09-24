@@ -126,8 +126,8 @@ cm# o lda foi melhor que o glm
 
 modeloforest <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
                     data = treino,method="rf",tuneLength=10)
-modelotree
-pred <- predict(modelotree,newdata = teste)
+modeloforest
+pred <- predict(modeloforest,newdata = teste)
 #ver<-cbind(teste,pred)
 #ver
 #testando observacao
@@ -136,9 +136,22 @@ pred <- predict(modelotree,newdata = teste)
 #pred <- predict(modeloknn,newdata = novaob)
 pred
 cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
-cm# o lda foi melhor que o glm
-#a arvore n foi mto boa
+cm# random forest nao foi muito interessante
 
+#redes neurais
+modelonnet <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
+                      data = treino,method="nnet",tuneLength=2)
+modelonnet
+pred <- predict(modelonnet,newdata = teste)
+#ver<-cbind(teste,pred)
+#ver
+#testando observacao
+#novaob <- data.frame(BMI=34.5,Age=40)
+#novaob
+#pred <- predict(modeloknn,newdata = novaob)
+pred
+cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
+cm# portanto os melhores foram o glm e lda
 
 
 
