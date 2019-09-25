@@ -1,4 +1,10 @@
 #chamando banco
+
+#PARA TODAS AS VARIAVEIS O MELHOR MODELO FOI O DE REGRESSAO LINEAR LOGISTICA
+#EXCLUINDO A PEDRIGREE FUNCTION O MELHOR TBM FOI A REGRESSAO LOGISTICA
+#NOS CASOS ABAIXO O MELHOR TAMBEM FOI A REGRESSAO LOGISTICA
+#O LDA APRESENTOU BONS RESULTADOS
+
 diabetes<-read.csv("diabetes.csv")
 diabetes<-as.data.frame(diabetes)
 
@@ -8,6 +14,8 @@ library(e1071)
 library(corrplot)
 #grafico de corr
 
+
+#####################################################
 corrplot(cor(diabetes),method="number")#caso deseje ver a correlacao com a pedigree
 diabetes <- diabetes[,-7]#tirando a pedigree function(nao achei interpretacao)
 
@@ -24,17 +32,17 @@ controle<-trainControl(method="repeatedcv",number=10,repeats = 5)
 
 #treinando modelo knn
 
-modeloknn <- train(factor(Outcome)~BMI+Age,#na.action = Caso tenha na
+modeloknn <- train(factor(Outcome)~BMI+Age+Pregnancies,#na.action = Caso tenha na
                data = treino,method="knn",tuneLength=10)
 modeloknn
 pred <- predict(modeloknn,newdata = teste)
-#ver<-cbind(teste,pred)
-#ver
+ver<-cbind(teste,pred)
+ver
 #testando observacao
-#novaob <- data.frame(BMI=34.5,Age=40)
+#novaob <- data.frame(BMI=34.5,Age=44)
 #novaob
 #pred <- predict(modeloknn,newdata = novaob)
-pred
+#pred
 cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
 cm
 
@@ -49,15 +57,15 @@ pred <- predict(modeloknn,newdata = teste)
 #ver<-cbind(teste,pred)
 #ver
 #testando observacao
-#novaob <- data.frame(BMI=34.5,Age=40)
-#novaob
-#pred <- predict(modeloknn,newdata = novaob)
+novaob <- data.frame(Pregnancies=0,BMI=20.5,Age=16)
+novaob
+pred <- predict(modeloknn,newdata = novaob)
 pred
 cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
 cm
 
 #testando outros modelos regressao logistica//maior acuracia do mod foi com essas
-modeloglm <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
+modeloglm <- train(factor(Outcome)~BMI+Age+Pregnancies,#na.action = Caso tenha na
                    data = treino,method="glm",tuneLength=10)
 modeloglm
 pred <- predict(modeloglm,newdata = teste)
@@ -153,7 +161,19 @@ pred
 cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
 cm# portanto os melhores foram o glm e lda
 
-
+modelongn <- train(factor(Outcome)~BMI+Age+Pregnancies+Glucose,#na.action = Caso tenha na
+                    data = treino,method="rbf",tuneLength=10)
+modelongn
+pred <- predict(modelongn,newdata = teste)
+#ver<-cbind(teste,pred)
+#ver
+#testando observacao
+#novaob <- data.frame(BMI=34.5,Age=40)
+#novaob
+#pred <- predict(modeloknn,newdata = novaob)
+pred
+cm <- confusionMatrix(pred,factor(teste[["Outcome"]]))
+cm# portanto os melhores foram o glm e lda
 
 
 
