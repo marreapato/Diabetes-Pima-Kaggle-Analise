@@ -1,0 +1,24 @@
+#analise exploratoria
+#2000 observacões
+
+library(tidyverse)
+library(ggthemes)
+diabetes$Outcome<-as.factor(diabetes$Outcome)
+diabetes$Outcome <-  str_replace_all(diabetes$Outcome,"1","Com diabetes")
+diabetes$Outcome <-  str_replace_all(diabetes$Outcome,"0","Sem diabetes")
+#?str_replace_all
+
+#realizando graficos
+tabdia<-table(diabetes$Outcome)
+tabdia<-as.data.frame(tabdia)
+
+ggplot(tabdia,aes(y=Freq,x=Var1,fill=Var1))+geom_col()+labs(fill="Diagnóstico",x="Diagnóstico",y="Proporção")+
+  theme_fivethirtyeight()+scale_fill_tableau()+ geom_text(aes(label=Freq),vjust=-0.1)
+
+ggplot(diabetes,aes(x=Outcome,y=BMI,fill=Outcome))+geom_boxplot()+scale_fill_tableau()+theme_tufte()+
+  labs(fill="Diagnóstico",y="IMC",x="Diagnóstico") + 
+  geom_text(data = means, aes(label = BMI, y = BMI +2))+stat_summary(fun.y=mean, colour="darkred", geom="point", 
+                                                                         shape=18, size=3,show_guide = FALSE)
+
+#means <- aggregate(BMI ~  Outcome,data = diabetes,mean)
+#means$BMI<-round(means$BMI)
