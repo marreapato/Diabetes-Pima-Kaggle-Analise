@@ -1,6 +1,8 @@
 #analise exploratoria
 #2000 observacões
 
+
+#fazendo ajustes
 library(tidyverse)
 library(ggthemes)
 diabetes$Outcome<-as.factor(diabetes$Outcome)
@@ -8,17 +10,31 @@ diabetes$Outcome <-  str_replace_all(diabetes$Outcome,"1","Com diabetes")
 diabetes$Outcome <-  str_replace_all(diabetes$Outcome,"0","Sem diabetes")
 #?str_replace_all
 
+
+#summary dos dados separados entre quem tem e quem n tem diabetes
+
+#olhem a media da glucose/glicose
+comdiabe<-diabetes %>% filter(Outcome=="Com diabetes")#grupo diabetico
+semdiabe<-diabetes %>% filter(Outcome=="Sem diabetes")#grupo nao diabetico
+
+summary(comdiabe)
+summary(semdiabe)
+
 #realizando graficos
-tabdia<-table(diabetes$Outcome)
+tabdia<-table(diabetes$Outcome)#tabela de frequencia
 tabdia<-as.data.frame(tabdia)
 
 ggplot(tabdia,aes(y=Freq,x=Var1,fill=Var1))+geom_col()+labs(fill="Diagnóstico",x="Diagnóstico",y="Proporção")+
   theme_fivethirtyeight()+scale_fill_tableau()+ geom_text(aes(label=Freq),vjust=-0.1)
 
+
+means <- aggregate(BMI ~  Outcome,data = diabetes,mean)
+means$BMI<-round(means$BMI)
 ggplot(diabetes,aes(x=Outcome,y=BMI,fill=Outcome))+geom_boxplot()+scale_fill_tableau()+theme_tufte()+
   labs(fill="Diagnóstico",y="IMC",x="Diagnóstico") + 
   geom_text(data = means, aes(label = BMI, y = BMI +2))+stat_summary(fun.y=mean, colour="darkred", geom="point", 
-                                                                         shape=18, size=3,show_guide = FALSE)
+                                                                     shape=18, size=3,show_guide = FALSE)
+#o ponto no meio e o imc medio
 
-#means <- aggregate(BMI ~  Outcome,data = diabetes,mean)
-#means$BMI<-round(means$BMI)
+ggplot(diabetes,aes(x=Age,fill=Outcome))+geom_histogram(bins=18,position = "dodge")+labs(x="Idade",y="Proporção",fill="Diagnóstico")+
+scale_fill_tableau()+theme_hc()
