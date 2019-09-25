@@ -24,17 +24,37 @@ summary(semdiabe)
 tabdia<-table(diabetes$Outcome)#tabela de frequencia
 tabdia<-as.data.frame(tabdia)
 
+#grafico da proporçao de diabeticos e n diabeticos na amostra
 ggplot(tabdia,aes(y=Freq,x=Var1,fill=Var1))+geom_col()+labs(fill="Diagnóstico",x="Diagnóstico",y="Proporção")+
   theme_fivethirtyeight()+scale_fill_tableau()+ geom_text(aes(label=Freq),vjust=-0.1)
 
 
+
+#fazendo boxplot
+#vejam os outliers(porem os mesmos sao veridicos)
 means <- aggregate(BMI ~  Outcome,data = diabetes,mean)
 means$BMI<-round(means$BMI)
 ggplot(diabetes,aes(x=Outcome,y=BMI,fill=Outcome))+geom_boxplot()+scale_fill_tableau()+theme_tufte()+
   labs(fill="Diagnóstico",y="IMC",x="Diagnóstico") + 
   geom_text(data = means, aes(label = BMI, y = BMI +2))+stat_summary(fun.y=mean, colour="darkred", geom="point", 
                                                                      shape=18, size=3,show_guide = FALSE)
-#o ponto no meio e o imc medio
+#o ponto no meio e o imc medio no grafico acima
 
-ggplot(diabetes,aes(x=Age,fill=Outcome))+geom_histogram(bins=18,position = "dodge")+labs(x="Idade",y="Proporção",fill="Diagnóstico")+
+
+#HISTOGRAMA DE IDADE
+ggplot(diabetes,aes(x=Age,fill=Outcome))+geom_histogram(bins=18,position = "dodge")+labs(x="Idade",y="Proporção de indivíduos",fill="Diagnóstico")+
 scale_fill_tableau()+theme_hc()
+
+
+
+#HISTOGRAMA DE Glicose
+ggplot(diabetes,aes(x=Glucose,fill=Outcome))+geom_histogram(bins=18,position = "dodge")+labs(x="Nível de glicose",y="Proporção de indivíduos",fill="Diagnóstico")+
+  scale_fill_tableau()+theme_hc()
+
+#HISTOGRAMA DE Insulina
+ggplot(diabetes,aes(x=Insulin,fill=Outcome))+geom_histogram(bins=18,position = "dodge")+labs(x="Nível de insulina",y="Proporção de indivíduos",fill="Diagnóstico")+
+  scale_fill_tableau()+theme_hc()
+
+
+
+
